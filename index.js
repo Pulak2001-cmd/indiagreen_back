@@ -3,6 +3,8 @@ const express = require("express");
 const cors = require("cors");
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_CLIENT_SECRET);
+const admin = require('firebase-admin');
+const serviceAccount = require("./serviceDetails.json")
 
 const app = express();
 const PORT = 8080;
@@ -11,6 +13,9 @@ app.use("/stripe", express.raw({type: "*/*"}))
 app.use(express.json());
 app.use(cors());
 
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
 app.post('/pay', async (req, res) => {
     try{
         const {phone} = req.body;
@@ -50,6 +55,24 @@ app.post('/stripe', async (req, res) => {
     }
 
     res.json({ok: true})
+})
+
+app.get('/check', function (req,res) {
+    console.log('check');
+    var todays = new Date();
+    var date = todays.getDate();
+    var year = todays.getFullYear();
+    var month = todays.getMonth()+1;
+    var hour = todays.getHours();
+    var minute = todays.getMinutes();
+    let data = {
+        date: date,
+        year: year,
+        month:month,
+        hour:hour,
+        minutes:minute
+    }
+    res.json({ok: true, data: data})
 })
 
 app.listen(PORT, ()=> console.log('Server running on port 8080'))
