@@ -136,9 +136,10 @@ setInterval(async function() {
             let red = dt.red;
             investData = dt.investData;
             let green = dt.green;
-            if(red > green) {
+            let winNumber_ = Math.floor(Math.random() * 3);
+            if(winNumber_ === 1) {
                 win = 'green';
-            } else if(green > red) {
+            } else if(winNumber_ === 2) {
                 win = 'red';
             } else {
                 let choose = Math.floor(Math.random() * 2) + 1
@@ -156,9 +157,14 @@ setInterval(async function() {
             } else if (win === 'red'){
                 winNumber = red_numbers[Math.floor(Math.random()*red_numbers.length)];
             } else if (win.includes('violet')){
-                winNumber = violet_numbers[Math.floor(Math.random()*violet_numbers.length)];
+                if(win.includes('red')){
+                    winNumber = 0
+                } else {
+                    winNumber = 5
+                }
             }
             let price = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000
+            console.log(price);
             docs[0].ref.update({
                 active: 0,
                 win: win,
