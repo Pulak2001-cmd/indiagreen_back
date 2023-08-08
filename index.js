@@ -118,6 +118,70 @@ const endGame = async () => {
           price: '135'+randomTwoDigitNumber.toString()+winNumber.toString()
         });
         console.log(`Game ended with ID: ${currentGameId}`);
+        userData = {};
+        userPhones = [];
+        await firestore.collection('bets').where('gameId', '==', currentGameId.toString()).get().then(async (query)=> {
+            const docs = query.docs;
+            console.log(docs.length);
+            for(let i=0; i<docs.length; i++) {
+              var docRef = docs[i].ref;
+              var data = docs[i].data();
+              if(data.betColor){
+                  let winAmt = 0;
+                  if(colors[randomNumber].includes(data.betColor)){
+                  if(data.betColor === 'Green'){
+                      winAmt = parseInt(data.amount)*1.8;
+                  } else if(data.betColor === 'Red'){
+                      winAmt = parseInt(data.amount)*1.8;
+                  } else if (data.betColor === 'Violet'){
+                      winAmt = parseInt(data.amount)*3.5;
+                  }
+                  }
+                  userData[data.phone] = winAmt;
+                  userPhones.push(data.phone);
+                  docRef.update({
+                  result: colors[randomNumber],
+                  resultAmount: winAmt,
+                  status: winAmt === 0 ? 'Fail': 'Success'
+                  })
+              } else if(data.betNumber){
+                let winAmt = 0;
+                if(winNumber === parseInt(data.betNumber)){
+                    winAmt = parseInt(data.amount)*7;
+                }
+                userData[data.phone] = winAmt;
+                userPhones.push(data.phone);
+                docRef.update({
+                    result: winNumber,
+                    resultAmount: winAmt,
+                    status: winAmt === 0 ? 'Fail': 'Success'
+                })
+              }
+            }
+        }).catch(error => {
+            console.log(error.message);
+        })
+        await firestore.collection('newData').where('phone', 'in', userPhones).get().then(async(query)=> {
+            const docs = query.docs;
+            for(let i = 0; i < docs.length; i++) {
+                const data = docs[i].data();
+                await docs[i].ref.update({
+                    balance: data.balance + userData[data.phone]
+                })
+                var today = new Date();
+                var tt = `${today.getFullYear()}/${today.getMonth()+1}/${today.getDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`
+                console.log(tt)
+                await firestore.collection('transactions').add({
+                    id: docs[i].id,
+                    phone: data.phone,
+                    amount: userData[data.phone],
+                    time: tt,
+                    message: 'Success, Credited for Winning Game'
+                })
+            }
+        })
+
+
         currentGameId = null;
       } else {
         console.log('No active game to end.');
