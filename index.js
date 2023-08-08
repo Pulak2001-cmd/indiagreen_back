@@ -156,29 +156,29 @@ const endGame = async () => {
                     resultAmount: winAmt,
                     status: winAmt === 0 ? 'Fail': 'Success'
                 })
+                var today = new Date();
+                var tt = `${today.getFullYear()}/${today.getMonth()+1}/${today.getDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`
+                console.log(tt)
+                await firestore.collection('newData').where('phone', '==', data.phone).get().then(async(query)=> {
+                  const docs = query.docs;
+                  for(let i = 0; i < docs.length; i++) {
+                      const data = docs[i].data();
+                      await docs[i].ref.update({
+                          balance: data.balance + winAmt
+                      })
+                      await firestore.collection('transactions').add({
+                          id: docs[i].id,
+                          phone: data.phone,
+                          amount: winAmt,
+                          time: tt,
+                          message: `Success, Credited for Winning Game - ${currentGameId}`
+                      })
+                  }
+                })
               }
             }
         }).catch(error => {
             console.log(error.message);
-        })
-        await firestore.collection('newData').where('phone', 'in', userPhones).get().then(async(query)=> {
-            const docs = query.docs;
-            for(let i = 0; i < docs.length; i++) {
-                const data = docs[i].data();
-                await docs[i].ref.update({
-                    balance: data.balance + userData[data.phone]
-                })
-                var today = new Date();
-                var tt = `${today.getFullYear()}/${today.getMonth()+1}/${today.getDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`
-                console.log(tt)
-                await firestore.collection('transactions').add({
-                    id: docs[i].id,
-                    phone: data.phone,
-                    amount: userData[data.phone],
-                    time: tt,
-                    message: 'Success, Credited for Winning Game'
-                })
-            }
         })
 
 
