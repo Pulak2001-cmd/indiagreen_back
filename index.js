@@ -129,13 +129,21 @@ const endGame = async () => {
               let winAmt = 0;
               if(data.betColor !== undefined) {
                   if(colors[randomNumber].includes(data.betColor)){
-                  if(data.betColor === 'Green'){
-                      winAmt = parseFloat(data.amount)*1.8;
-                  } else if(data.betColor === 'Red'){
-                      winAmt = parseFloat(data.amount)*1.8;
-                  } else if (data.betColor === 'Violet'){
-                      winAmt = parseFloat(data.amount)*3.5;
-                  }
+                    if(data.betColor === 'Green'){
+                      if(colors[randomNumber].includes('Violet')){
+                        winAmt = parseFloat(data.amount)*0.9
+                      } else {
+                        winAmt = parseFloat(data.amount)*1.8;
+                      }
+                    } else if(data.betColor === 'Red'){
+                      if(colors[randomNumber].includes('Violet')){
+                        winAmt = parseFloat(data.amount)*0.9
+                      } else {
+                        winAmt = parseFloat(data.amount)*1.8;
+                      }
+                    } else if (data.betColor === 'Violet'){
+                        winAmt = parseFloat(data.amount)*3.5;
+                    }
                   }
                   userData[data.phone] = winAmt;
                   userPhones.push(data.phone);
@@ -171,7 +179,7 @@ const endGame = async () => {
                         phone: data.phone,
                         amount: winAmt,
                         time: tt,
-                        message: `Success, Credited for Winning Game - ${currentGameId}`
+                        message: `Success, Credited for Winning Game - ${data.gameId}`
                     })
                 }
               })
