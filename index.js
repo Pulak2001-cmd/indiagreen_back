@@ -127,14 +127,14 @@ const endGame = async () => {
               var docRef = docs[i].ref;
               var data = docs[i].data();
               let winAmt = 0;
-              if(data.betColor){
+              if(data.betColor !== undefined) {
                   if(colors[randomNumber].includes(data.betColor)){
                   if(data.betColor === 'Green'){
-                      winAmt = parseInt(data.amount)*1.8;
+                      winAmt = parseFloat(data.amount)*1.8;
                   } else if(data.betColor === 'Red'){
-                      winAmt = parseInt(data.amount)*1.8;
+                      winAmt = parseFloat(data.amount)*1.8;
                   } else if (data.betColor === 'Violet'){
-                      winAmt = parseInt(data.amount)*3.5;
+                      winAmt = parseFloat(data.amount)*3.5;
                   }
                   }
                   userData[data.phone] = winAmt;
@@ -144,9 +144,9 @@ const endGame = async () => {
                   resultAmount: winAmt,
                   status: winAmt === 0 ? 'Fail': 'Success'
                   })
-              } else if(data.betNumber){
+              } else if(data.betNumber !== undefined) {
                 if(winNumber === parseInt(data.betNumber)){
-                    winAmt = parseInt(data.amount)*7;
+                    winAmt = parseFloat(data.amount)*7;
                 }
                 userData[data.phone] = winAmt;
                 userPhones.push(data.phone);
