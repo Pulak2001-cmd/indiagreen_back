@@ -126,8 +126,8 @@ const endGame = async () => {
             for(let i=0; i<docs.length; i++) {
               var docRef = docs[i].ref;
               var data = docs[i].data();
+              let winAmt = 0;
               if(data.betColor){
-                  let winAmt = 0;
                   if(colors[randomNumber].includes(data.betColor)){
                   if(data.betColor === 'Green'){
                       winAmt = parseInt(data.amount)*1.8;
@@ -145,7 +145,6 @@ const endGame = async () => {
                   status: winAmt === 0 ? 'Fail': 'Success'
                   })
               } else if(data.betNumber){
-                let winAmt = 0;
                 if(winNumber === parseInt(data.betNumber)){
                     winAmt = parseInt(data.amount)*7;
                 }
