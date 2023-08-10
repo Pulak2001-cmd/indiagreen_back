@@ -198,9 +198,9 @@ const endGame = async () => {
     }
 };
 
-cron.schedule('*/3 * * * *', () => {
-  startGame();
-    endGame();
+cron.schedule('*/3 * * * *', async() => {
+  await endGame();
+  await startGame();
 });
 
 app.get('/currentGame', async (req, res) => {
