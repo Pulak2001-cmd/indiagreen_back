@@ -237,4 +237,11 @@ app.get('/previousGames', async (req, res) => {
     }
 });
 
+app.get('/currentVersion', async (req, res) => {
+  const obj = {
+    version: '1.0.0'
+  }
+  res.status(200).json(obj);
+})
+
 app.listen(PORT, ()=> console.log('Server running on port 8080'))
