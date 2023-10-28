@@ -142,7 +142,7 @@ const endGame = async () => {
                         winAmt = parseFloat(data.amount)*1.8;
                       }
                     } else if (data.betColor === 'Violet'){
-                        winAmt = parseFloat(data.amount)*3.5;
+                        winAmt = parseFloat(data.amount)*0.5;
                     }
                   }
                   userData[data.phone] = winAmt;
